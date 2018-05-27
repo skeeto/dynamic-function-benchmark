@@ -4,6 +4,9 @@ This is a simple benchmark for demonstrating the PLT function call
 overhead. It requires x86-64, but will otherwise work on any POSIX
 system.
 
+Full article:
+[When FFI Function Calls Beat Native C](http://nullprogram.com/blog/2018/05/27/)
+
 Results on an Intel i7-6700 (Skylake):
 
     jit: 1.008108 ns/call
