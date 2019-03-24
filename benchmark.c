@@ -134,9 +134,13 @@ jit_free(struct jit_func *f)
 int
 main(void)
 {
+    /* Get pointer directly to empty() */
+    void *emptyso = dlopen("./empty.so", RTLD_NOW);
+    void *empty_sym = dlsym(emptyso, "empty");
+
     /* JIT benchmark */
     struct jit_func jit;
-    jit_compile(&jit, empty);
+    jit_compile(&jit, empty_sym);
     long jit_count = 0;
     for (int i = 0; i < BENCHMARK_SAMPLES; i++) {
         running_ptr = jit.running;
@@ -164,18 +168,17 @@ main(void)
     printf("plt: %f ns/call\n", 1e9 * BENCHMARK_SECONDS / plt_count);
 
     /* Indirect benchmark */
-    void *h = dlopen("./empty.so", RTLD_LAZY);
-    void *f = dlsym(h, "empty");
     long indirect_count = 0;
     for (int i = 0; i < BENCHMARK_SAMPLES; i++) {
         running_ptr = &running;
         *running_ptr = 1;
         signal(SIGALRM, alarm_handler);
         alarm(BENCHMARK_SECONDS);
-        long count = indirect_benchmark(f);
+        long count = indirect_benchmark(empty_sym);
         if (count > indirect_count)
             indirect_count = count;
     }
-    dlclose(h);
     printf("ind: %f ns/call\n", 1e9 * BENCHMARK_SECONDS / indirect_count);
+
+    dlclose(emptyso);
 }
