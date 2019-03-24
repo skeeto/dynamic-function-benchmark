@@ -9,9 +9,11 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#define PAGESIZE           4096
-#define PAGEMASK           (~0xfff)
-#define SAFETY_MARGIN      (1024 * PAGESIZE)
+#if !defined(PAGESIZE)
+#    define PAGESIZE       4096
+#endif
+#define PAGEMASK           (~(PAGESIZE - 1))
+#define SAFETY_MARGIN      (4L * 1024 * 1024)
 #define BENCHMARK_SECONDS  2
 #define BENCHMARK_SAMPLES  4
 
