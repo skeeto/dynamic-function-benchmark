@@ -71,7 +71,7 @@ jit_compile(struct jit_func *f, void (*empty)(void))
     size_t len = PAGESIZE * 2;
     unsigned char *p = mmap(desired, len, prot, MAP_PRIVATE, zero, 0);
     if (p == MAP_FAILED) {
-        perror("/dev/zero");
+        perror("mmap");
         exit(EXIT_FAILURE);
     }
     close(zero);
